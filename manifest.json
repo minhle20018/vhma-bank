@@ -1,6 +1,6 @@
 {
-  "name": "VHMA Bank Digital",
-  "short_name": "VHMA Bank",
+  "name": "VHMA Bank Digital Pro",
+  "short_name": "VHMA Bank Pro",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#07090e",

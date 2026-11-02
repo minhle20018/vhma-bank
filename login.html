@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VHMA Bank - Đăng nhập hệ thống</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #07090e;
+            letter-spacing: -0.01em;
+        }
+        /* Custom Checkbox UI */
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #475569;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            background-color: #090d16;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .custom-checkbox:checked {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+        .custom-checkbox:checked::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 9px;
+            color: white;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen text-slate-100 p-0 sm:p-4">
+
+    <!-- Mobile App Container -->
+    <div class="w-full sm:max-w-[400px] h-screen sm:h-[820px] bg-slate-950 sm:rounded-[36px] sm:border-[7px] sm:border-slate-800 shadow-2xl flex flex-col relative overflow-hidden text-xs">
+        
+        <!-- TOP APP BAR / HEADER -->
+        <header class="px-6 pt-10 pb-4 flex items-center justify-between bg-slate-950/80 backdrop-blur-md z-10 border-b border-slate-900">
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleLanguage()" class="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-semibold text-blue-400 hover:bg-slate-800 transition" id="lang-btn">
+                    EN / VI
+                </button>
+            </div>
+            <div class="flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="lbl-secure-sys" class="text-[10px] text-slate-400 font-mono tracking-wide">SECURE SSL 256-BIT</span>
+            </div>
+        </header>
+
+        <!-- MAIN LOGIN CONTENT -->
+        <main class="flex-1 overflow-y-auto hide-scrollbar px-6 pt-6 pb-8 flex flex-col justify-between">
+            
+            <!-- BRANDING SECTION (Updated with new VCA Logo) -->
+            <div class="flex flex-col items-center text-center pt-2">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/25 mb-3">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover rounded-[14px]" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-cyan-400 font-bold text-xl" style="display:none;">V</div>
+                </div>
+                <h1 class="text-lg font-bold text-white tracking-tight">VHMA Bank</h1>
+                <p id="lbl-slogan" class="text-[11px] text-slate-400 mt-1 font-normal tracking-wide">An toàn - Bảo mật - Tốc độ</p>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form onsubmit="handleLogin(event)" class="space-y-4 my-auto">
+                
+                <!-- USERNAME FIELD -->
+                <div class="space-y-1.5">
+                    <label id="lbl-username" class="text-[11px] font-medium text-slate-300 block">Tên đăng nhập / Số điện thoại</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-regular fa-user text-xs"></i>
+                        </span>
+                        <input type="text" id="login-username" placeholder="Nhập tên đăng nhập..." required
+                            class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl pl-10 pr-3.5 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition font-mono">
+                    </div>
+                </div>
+
+                <!-- PASSWORD FIELD -->
+                <div class="space-y-1.5">
+                    <label id="lbl-password" class="text-[11px] font-medium text-slate-300 block">Mật khẩu đăng nhập</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-300">
+                            <i class="fa-regular fa-lock text-xs"></i>
+                        </span>
+                        <input type="password" id="login-password" placeholder="••••••••" required
+                            class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl pl-10 pr-10 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition font-mono">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-300 hover:text-white transition">
+                            <i id="eye-password-icon" class="fa-regular fa-eye-slash text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- REMEMBER ME & FORGOT PASSWORD -->
+                <div class="flex items-center justify-between pt-1">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="remember-me" class="custom-checkbox">
+                        <span id="lbl-remember" class="text-[11px] text-slate-400 select-none">Nhớ tài khoản</span>
+                    </label>
+                    <a href="#" onclick="showNotification(currentLang === 'vi' ? 'Vui lòng liên hệ tổng đài 1900 8888 để lấy lại mật khẩu' : 'Please contact hotline 1900 8888')" id="lbl-forgot" class="text-[11px] text-blue-400 font-medium hover:underline">Quên mật khẩu?</a>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" id="btn-submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 rounded-2xl transition shadow-lg shadow-blue-600/30 text-xs mt-2 flex items-center justify-center space-x-2">
+                    <span>Đăng nhập hệ thống</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+
+            </form>
+
+            <!-- FOOTER COPYRIGHT -->
+            <div class="text-center pt-4">
+                <p class="text-[10px] text-slate-500 font-mono">© 2026 VHMA Bank Corporation.</p>
+                <p class="text-[9px] text-slate-600 mt-0.5">All rights reserved.</p>
+            </div>
+
+        </main>
+
+        <!-- NOTIFICATION TOAST -->
+        <div id="toast" class="absolute top-16 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-white px-3.5 py-2 rounded-xl shadow-xl text-[10px] font-medium opacity-0 pointer-events-none transition-all duration-300 z-50">
+            Thông báo hệ thống
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentLang = 'vi';
+
+        let translations = {
+            vi: {
+                secureSys: "SECURE SSL 256-BIT",
+                slogan: "An toàn - Bảo mật - Tốc độ",
+                usernameLabel: "Tên đăng nhập / Số điện thoại",
+                usernamePlaceholder: "Nhập tên đăng nhập...",
+                passwordLabel: "Mật khẩu đăng nhập",
+                rememberMe: "Nhớ tài khoản",
+                forgotPass: "Quên mật khẩu?",
+                submitBtn: "Đăng nhập hệ thống",
+                langBtn: "EN / VI",
+                emptyFields: "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!",
+                loginSuccess: "Đăng nhập thành công! Đang chuyển hướng..."
+            },
+            en: {
+                secureSys: "SECURE SSL 256-BIT",
+                slogan: "Safe - Secure - Fast",
+                usernameLabel: "Username / Phone Number",
+                usernamePlaceholder: "Enter username...",
+                passwordLabel: "Password",
+                rememberMe: "Remember me",
+                forgotPass: "Forgot password?",
+                submitBtn: "Sign In",
+                langBtn: "VI / EN",
+                emptyFields: "Please enter both username and password!",
+                loginSuccess: "Login successful! Redirecting..."
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'vi' ? 'en' : 'vi';
+            updateTexts();
+        }
+
+        function updateTexts() {
+            const t = translations[currentLang];
+            document.getElementById('lbl-secure-sys').innerText = t.secureSys;
+            document.getElementById('lbl-slogan').innerText = t.slogan;
+            document.getElementById('lbl-username').innerText = t.usernameLabel;
+            document.getElementById('login-username').placeholder = t.usernamePlaceholder;
+            document.getElementById('lbl-password').innerText = t.passwordLabel;
+            document.getElementById('lbl-remember').innerText = t.rememberMe;
+            document.getElementById('lbl-forgot').innerText = t.forgotPass;
+            document.getElementById('btn-submit').innerHTML = `<span>${t.submitBtn}</span><i class="fa-solid fa-arrow-right text-[10px]"></i>`;
+            document.getElementById('lang-btn').innerText = t.langBtn;
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('login-password');
+            const eyeIcon = document.getElementById('eye-password-icon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.className = 'fa-regular fa-eye text-xs text-blue-400';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.className = 'fa-regular fa-eye-slash text-xs';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const t = translations[currentLang];
+
+            if (!username || !password) {
+                showNotification(t.emptyFields);
+                return;
+            }
+
+            sessionStorage.setItem('vhma_user', username);
+            showNotification(t.loginSuccess);
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function showNotification(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

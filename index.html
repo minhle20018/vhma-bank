@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VHMA Bank - Digital Banking</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #07090e;
+            letter-spacing: -0.01em;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen text-slate-100 p-0 sm:p-4">
+
+    <!-- Mobile App Container -->
+    <div class="w-full sm:max-w-[400px] h-screen sm:h-[820px] bg-slate-950 sm:rounded-[36px] sm:border-[7px] sm:border-slate-800 shadow-2xl flex flex-col relative overflow-hidden text-xs">
+        
+        <!-- TOP APP BAR -->
+        <header class="px-5 pt-10 pb-3 flex items-center justify-between bg-slate-950/80 backdrop-blur-md z-10 border-b border-slate-900">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 flex items-center justify-center shadow-md shadow-blue-500/20">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover rounded-[10px]" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="w-full h-full bg-slate-900 rounded-[10px] items-center justify-center text-cyan-400 font-bold text-[11px]" style="display:none;">V</div>
+                </div>
+                <div>
+                    <h1 id="lbl-greeting" class="text-[10px] text-slate-300 font-normal">Xin chào,</h1>
+                    <p id="user-fullname" class="text-xs font-semibold text-white tracking-tight">Lê Minh</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleGlobalBalance()" class="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-medium text-slate-200 hover:text-white transition flex items-center space-x-1.5" title="Ẩn/Hiện toàn bộ số dư">
+                    <i id="global-eye-icon" class="fa-regular fa-eye text-blue-400"></i>
+                    <span id="global-eye-text">Hiển thị</span>
+                </button>
+                <button onclick="toggleLanguage()" class="px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-semibold text-blue-400 hover:bg-slate-800 transition" id="lang-btn">
+                    EN / VI
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN SCROLLABLE CONTENT -->
+        <main class="flex-1 overflow-y-auto hide-scrollbar pb-20">
+            
+            <!-- TAB 1: HOME SCREEN -->
+            <div id="tab-home" class="space-y-4 px-4 pt-3">
+                
+                <!-- MULTI-CURRENCY & ASSET ACCOUNTS CONTAINER -->
+                <div id="accounts-container" class="space-y-3">
+                    
+                    <!-- TÀI KHOẢN THANH TOÁN VND -->
+                    <div class="relative overflow-hidden rounded-2xl bg-slate-900/90 border border-slate-800/80 border-l-4 border-l-blue-600 p-4 shadow-lg shadow-black/40">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <div class="flex items-center space-x-2">
+                                <span id="lbl-acc-type" class="text-[10px] uppercase tracking-wider font-semibold text-slate-200">Tài khoản thanh toán</span>
+                                <span class="text-[9px] bg-blue-500/15 text-blue-300 px-1.5 py-0.5 rounded font-mono font-medium">VND</span>
+                            </div>
+                            <span class="text-[9px] text-slate-300 font-mono">VHMA-CORE</span>
+                        </div>
+
+                        <div class="flex items-center justify-between my-2">
+                            <div>
+                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">0 đ</h2>
+                                <p class="text-[10px] text-slate-300 mt-0.5 font-mono">STK: 1900 8888 6688</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 grid grid-cols-4 gap-1.5 text-center">
+                            <button onclick="openModal('transfer')" class="flex flex-col items-center group">
+                                <div class="w-8 h-8 rounded-lg bg-slate-800/80 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition shadow-sm">
+                                    <i class="fa-solid fa-arrow-right-arrow-left text-[11px]"></i>
+                                </div>
+                                <span id="btn-transfer" class="text-[9px] mt-1 font-medium text-slate-200">Chuyển tiền</span>
+                            </button>
+                            <button onclick="openModal('deposit')" class="flex flex-col items-center group">
+                                <div class="w-8 h-8 rounded-lg bg-slate-800/80 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition shadow-sm">
+                                    <i class="fa-solid fa-plus text-[11px]"></i>
+                                </div>
+                                <span id="btn-deposit" class="text-[9px] mt-1 font-medium text-slate-200">Nạp tiền</span>
+                            </button>
+                            <button onclick="openModal('savings')" class="flex flex-col items-center group">
+                                <div class="w-8 h-8 rounded-lg bg-slate-800/80 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition shadow-sm">
+                                    <i class="fa-solid fa-vault text-[11px]"></i>
+                                </div>
+                                <span id="btn-savings" class="text-[9px] mt-1 font-medium text-slate-200">Tiết kiệm</span>
+                            </button>
+                            <button onclick="openModal('qr')" class="flex flex-col items-center group">
+                                <div class="w-8 h-8 rounded-lg bg-slate-800/80 flex items-center justify-center text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition shadow-sm">
+                                    <i class="fa-solid fa-qrcode text-[11px]"></i>
+                                </div>
+                                <span id="btn-qr" class="text-[9px] mt-1 font-medium text-slate-200">Quét QR</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TÀI KHOẢN USD -->
+                    <div class="relative overflow-hidden rounded-2xl bg-slate-900/90 border border-slate-800/80 border-l-4 border-l-emerald-500 p-4 shadow-lg shadow-black/40">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] uppercase tracking-wider font-semibold text-slate-200">Tài khoản USD</span>
+                                <span class="text-[9px] bg-emerald-500/15 text-emerald-300 px-1.5 py-0.5 rounded font-mono font-medium">USD</span>
+                            </div>
+                            <span class="text-[9px] text-slate-300 font-mono">USD-CORE •••• 7322</span>
+                        </div>
+
+                        <div class="flex items-center justify-between my-2">
+                            <div>
+                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">$0.00</h2>
+                                <p id="usd-warning-box" class="text-[10px] text-amber-300 mt-0.5 font-medium items-center space-x-1" style="display: flex;">
+                                    <i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
+                                    <span>Số dư khả dụng dưới $100</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-2 text-center">
+                            <button onclick="openModal('usd-transfer')" class="bg-slate-800/60 hover:bg-slate-800 text-slate-100 text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-arrow-right-arrow-left text-emerald-400 text-[9px]"></i>
+                                <span>Chuyển ngoại tệ</span>
+                            </button>
+                            <button onclick="openModal('usd-deposit')" class="bg-slate-800/60 hover:bg-slate-800 text-slate-100 text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-plus text-emerald-400 text-[9px]"></i>
+                                <span>Nạp USD</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- THẺ TÀI KHOẢN TIẾT KIỆM -->
+                    <div class="relative overflow-hidden rounded-2xl bg-slate-900/90 border border-slate-800/80 border-l-4 border-l-amber-500 p-4 shadow-lg shadow-black/40">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] uppercase tracking-wider font-semibold text-slate-200">Tiết kiệm Online</span>
+                                <span class="text-[9px] bg-amber-500/15 text-amber-300 px-1.5 py-0.5 rounded font-mono font-medium">6.8%/năm</span>
+                            </div>
+                            <span class="text-[9px] text-slate-300 font-mono">VHMA-SAVINGS</span>
+                        </div>
+                        <div class="flex items-center justify-between my-2">
+                            <div>
+                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">0 đ</h2>
+                                <p class="text-[10px] text-slate-300 mt-0.5 font-normal">Kỳ hạn 6 tháng • Tự động tái tục</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-2 text-center">
+                            <button onclick="openModal('savings')" class="bg-slate-800/60 hover:bg-slate-800 text-amber-300 text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1">
+                                <i class="fa-solid fa-vault text-[9px]"></i>
+                                <span id="btn-add-savings">Gửi thêm</span>
+                            </button>
+                            <button onclick="openModal('savings-withdraw')" class="bg-slate-800/60 hover:bg-slate-800 text-slate-200 text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1">
+                                <i class="fa-solid fa-arrow-down-long text-[9px] text-amber-400"></i>
+                                <span id="btn-withdraw-savings">Rút về TK chính</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- THẺ TÀI KHOẢN ĐẦU TƯ CHỨNG KHOÁN -->
+                    <div class="relative overflow-hidden rounded-2xl bg-slate-900/90 border border-slate-800/80 border-l-4 border-l-purple-500 p-4 shadow-lg shadow-black/40">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <div class="flex items-center space-x-2">
+                                <span id="lbl-stock-title" class="text-[10px] uppercase tracking-wider font-semibold text-slate-200">Danh mục Blue-chip</span>
+                                <span class="text-[9px] bg-emerald-500/15 text-emerald-300 px-1.5 py-0.5 rounded font-mono font-medium">+18.4% YTD</span>
+                            </div>
+                            <span class="text-[9px] text-slate-300 font-mono">VN30</span>
+                        </div>
+
+                        <div class="flex items-center justify-between my-2">
+                            <div>
+                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">0 đ</h2>
+                                <p id="lbl-stock-subtitle" class="text-[10px] text-slate-300 mt-0.5 font-normal">VCB, VIC, FPT, VNM • Ủy thác chuyên nghiệp</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 grid grid-cols-3 gap-1.5 text-center">
+                            <button onclick="openModal('stock-deposit')" class="bg-slate-800/60 hover:bg-slate-800 text-purple-300 text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1">
+                                <i class="fa-solid fa-plus text-[9px]"></i>
+                                <span id="btn-add-stock-money">Nạp thêm</span>
+                            </button>
+                            <button onclick="openModal('stock-withdraw')" class="bg-slate-800/60 hover:bg-slate-800 text-amber-300 text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1">
+                                <i class="fa-solid fa-arrow-down-long text-[9px]"></i>
+                                <span id="btn-withdraw-stock">Rút về TK chính</span>
+                            </button>
+                            <button onclick="openModal('stock')" class="bg-purple-600/80 hover:bg-purple-600 text-white text-[10px] font-medium py-1.5 rounded-lg transition flex items-center justify-center space-x-1 shadow-md shadow-purple-600/20">
+                                <i class="fa-solid fa-chart-pie text-[9px]"></i>
+                                <span id="btn-add-stock">Chi tiết</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- UTILITIES & SERVICES -->
+                <div>
+                    <h3 id="lbl-utilities" class="text-xs font-semibold text-slate-200 mb-2.5">Tiện ích thông minh</h3>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div onclick="showNotification(currentLang === 'vi' ? 'Tính năng đang phát triển' : 'Feature under development')" class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:border-blue-500/40 transition">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center mb-1 text-xs">
+                                <i class="fa-regular fa-lightbulb"></i>
+                            </div>
+                            <span id="util-1" class="text-[10px] text-slate-200 font-medium">Điện / Nước</span>
+                        </div>
+                        <div onclick="showNotification(currentLang === 'vi' ? 'Tính năng đang phát triển' : 'Feature under development')" class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:border-blue-500/40 transition">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-1 text-xs">
+                                <i class="fa-regular fa-smartphone"></i>
+                            </div>
+                            <span id="util-2" class="text-[10px] text-slate-200 font-medium">Nạp ĐT</span>
+                        </div>
+                        <div onclick="showNotification(currentLang === 'vi' ? 'Tính năng đang phát triển' : 'Feature under development')" class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:border-blue-500/40 transition">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center mb-1 text-xs">
+                                <i class="fa-regular fa-paper-plane"></i>
+                            </div>
+                            <span id="util-3" class="text-[10px] text-slate-200 font-medium">Vé máy bay</span>
+                        </div>
+                        <div onclick="showNotification(currentLang === 'vi' ? 'Tính năng đang phát triển' : 'Feature under development')" class="bg-slate-900/70 border border-slate-800/80 p-2.5 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:border-blue-500/40 transition">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center mb-1 text-xs">
+                                <i class="fa-regular fa-credit-card"></i>
+                            </div>
+                            <span id="util-4" class="text-[10px] text-slate-200 font-medium">Vay nhanh</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT TRANSACTIONS -->
+                <div>
+                    <div class="flex justify-between items-center mb-2.5">
+                        <h3 id="lbl-recent-tx" class="text-xs font-semibold text-slate-200">Giao dịch gần đây</h3>
+                        <button onclick="switchTab('history')" id="lbl-see-all" class="text-[10px] text-blue-400 font-medium hover:underline">Xem tất cả</button>
+                    </div>
+                    <div id="home-tx-list" class="space-y-2"></div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: HISTORY SCREEN -->
+            <div id="tab-history" class="space-y-3 px-4 pt-3 hidden">
+                <h2 id="lbl-history-title" class="text-sm font-semibold text-white mb-1">Lịch sử giao dịch</h2>
+                <div class="flex space-x-1.5 pb-1">
+                    <button onclick="filterTransactions('all')" id="filter-all" class="px-2.5 py-1 rounded-lg bg-blue-600 text-[10px] font-semibold text-white transition">Tất cả</button>
+                    <button onclick="filterTransactions('in')" id="filter-in" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-medium text-slate-300 hover:text-white transition">Tiền vào</button>
+                    <button onclick="filterTransactions('out')" id="filter-out" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-medium text-slate-300 hover:text-white transition">Tiền ra</button>
+                </div>
+                <div id="full-tx-list" class="space-y-2"></div>
+            </div>
+
+            <!-- TAB 3: CARDS SCREEN -->
+            <div id="tab-cards" class="space-y-3 px-4 pt-3 hidden">
+                <h2 id="lbl-cards-title" class="text-sm font-semibold text-white mb-1">Quản lý Thẻ</h2>
+                <div class="w-full bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-[10px] font-mono uppercase text-cyan-400 font-semibold">VHMA Platinum Visa</span>
+                        <i class="fa-brands fa-cc-visa text-2xl text-white"></i>
+                    </div>
+                    <div class="text-sm font-mono tracking-wider text-white mb-4">4892 •••• •••• 9921</div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <span id="lbl-card-holder" class="text-[9px] text-slate-300 block">CHỦ THẺ</span>
+                            <span class="text-[11px] font-semibold text-white tracking-wide">LE MINH</span>
+                        </div>
+                        <div>
+                            <span id="lbl-card-exp" class="text-[9px] text-slate-300 block">HẾT HẠN</span>
+                            <span class="text-[11px] font-semibold text-white tracking-wide">10/28</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-900/70 border border-slate-800/80 p-3 rounded-xl space-y-2.5">
+                    <div class="flex justify-between items-center">
+                        <span id="lbl-lock-card" class="text-xs text-slate-200">Khóa thẻ tạm thời</span>
+                        <input type="checkbox" class="toggle accent-blue-600 scale-110 cursor-pointer">
+                    </div>
+                    <div class="flex justify-between items-center pt-2.5 border-t border-slate-800">
+                        <span id="lbl-online-pay" class="text-xs text-slate-200">Thanh toán quốc tế (Online)</span>
+                        <input type="checkbox" checked class="toggle accent-blue-600 scale-110 cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: UTILITIES SCREEN -->
+            <div id="tab-utilities" class="space-y-3 px-4 pt-3 hidden">
+                <h2 id="lbl-util-title" class="text-sm font-semibold text-white mb-1">Tiện ích tài chính</h2>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div onclick="openModal('stock')" class="bg-slate-900/70 border border-slate-800/80 p-3 rounded-xl flex flex-col items-center text-center cursor-pointer hover:border-blue-500/40 transition">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-base mb-1.5">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h4 id="lbl-stock" class="text-xs font-semibold text-white">Đầu tư chứng khoán</h4>
+                        <p id="lbl-stock-desc" class="text-[10px] text-slate-300 mt-0.5">Danh mục VN30 và cổ phiếu tập đoàn lớn.</p>
+                    </div>
+                    <div onclick="showNotification(currentLang === 'vi' ? 'Bảo hiểm số đang hoạt động' : 'Digital insurance active')" class="bg-slate-900/70 border border-slate-800/80 p-3 rounded-xl flex flex-col items-center text-center cursor-pointer hover:border-blue-500/40 transition">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-base mb-1.5">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h4 id="lbl-insurance" class="text-xs font-semibold text-white">Bảo hiểm số</h4>
+                        <p id="lbl-ins-desc" class="text-[10px] text-slate-300 mt-0.5">Bảo vệ sức khỏe và tài sản chỉ với 1 chạm.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: PROFILE SCREEN -->
+            <div id="tab-profile" class="space-y-3 px-4 pt-3 hidden">
+                <div class="flex flex-col items-center py-2">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 mb-2">
+                        <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-xl font-bold text-white">LM</div>
+                    </div>
+                    <h2 class="text-xs font-bold text-white profile-name-text">Lê Minh</h2>
+                    <p class="text-[10px] text-slate-300 font-mono">ID: minhle20018</p>
+                    <span id="lbl-membership" class="mt-1.5 bg-blue-500/15 text-blue-300 text-[9px] font-medium px-2.5 py-0.5 rounded-full border border-blue-500/20">Hạng: Khách hàng Kim Cương</span>
+                </div>
+                <div class="bg-slate-900/70 border border-slate-800/80 rounded-xl overflow-hidden text-xs">
+                    <div class="flex items-center justify-between p-3 border-b border-slate-800 text-slate-200">
+                        <span id="lbl-bio-setting" class="flex items-center"><i class="fa-regular fa-id-card w-5 text-blue-400 text-xs"></i> Xác thực sinh trắc học</span>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                    </div>
+                    <div class="flex items-center justify-between p-3 border-b border-slate-800 text-slate-200">
+                        <span id="lbl-pass-setting" class="flex items-center"><i class="fa-regular fa-key w-5 text-blue-400 text-xs"></i> Đổi mật khẩu đăng nhập</span>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                    </div>
+                    <div class="flex items-center justify-between p-3 text-red-400 cursor-pointer hover:bg-slate-800/50 transition" onclick="handleLogout()">
+                        <span id="lbl-logout" class="flex items-center"><i class="fa-regular fa-arrow-right-from-bracket w-5 text-xs"></i> Đăng xuất hệ thống</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav class="absolute bottom-0 left-0 right-0 h-16 bg-slate-950/90 backdrop-blur-xl border-t border-slate-900 flex justify-around items-center px-1 z-20">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-blue-500 transition">
+                <i class="fa-solid fa-house text-sm"></i>
+                <span id="nav-t-home" class="text-[9px] mt-1 font-medium">Trang chủ</span>
+            </button>
+            <button onclick="switchTab('history')" id="nav-history" class="flex flex-col items-center text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                <span id="nav-t-history" class="text-[9px] mt-1 font-normal">Lịch sử</span>
+            </button>
+            <button onclick="switchTab('cards')" id="nav-cards" class="flex flex-col items-center text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-credit-card text-sm"></i>
+                <span id="nav-t-cards" class="text-[9px] mt-1 font-normal">Thẻ</span>
+            </button>
+            <button onclick="switchTab('utilities')" id="nav-utilities" class="flex flex-col items-center text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-grip text-sm"></i>
+                <span id="nav-t-utilities" class="text-[9px] mt-1 font-normal">Tiện ích</span>
+            </button>
+            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-user text-sm"></i>
+                <span id="nav-t-profile" class="text-[9px] mt-1 font-normal">Cá nhân</span>
+            </button>
+        </nav>
+
+        <!-- MODAL OVERLAY -->
+        <div id="modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+            <div class="w-full sm:max-w-sm bg-slate-900 rounded-t-2xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl transform transition-all text-xs">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 id="modal-title" class="text-xs font-bold text-white">Quản lý tài sản</h3>
+                    <button onclick="closeModal()" class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
+                <div id="modal-body" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATION TOAST -->
+        <div id="toast" class="absolute top-14 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-white px-3 py-1.5 rounded-xl shadow-xl text-[10px] font-medium opacity-0 pointer-events-none transition-all duration-300 z-50">
+            Thông báo hệ thống
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const loggedUser = sessionStorage.getItem('vhma_user');
+        if (!loggedUser) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('user-fullname').innerText = loggedUser;
+        }
+
+        let currentLang = 'vi';
+        let isGlobalBalanceVisible = true;
+
+        let currentBalance = localStorage.getItem('vhma_balance') !== null ? parseInt(localStorage.getItem('vhma_balance')) : 457000000000;
+        let currentUsdBalance = localStorage.getItem('vhma_usd_balance') !== null ? parseFloat(localStorage.getItem('vhma_usd_balance')) : 190085.50;
+        let currentSavingsBalance = localStorage.getItem('vhma_savings_balance') !== null ? parseInt(localStorage.getItem('vhma_savings_balance')) : 5000000;
+        let currentStockBalance = localStorage.getItem('vhma_stock_balance') !== null ? parseInt(localStorage.getItem('vhma_stock_balance')) : 5110000000;
+
+        let stockPortfolio = localStorage.getItem('vhma_stock_portfolio') ? JSON.parse(localStorage.getItem('vhma_stock_portfolio')) : {
+            vcb: 1788500000,
+            vic: 1277500000,
+            fpt: 1277500000,
+            vnm: 766500000
+        };
+        
+        let defaultTransactions = [
+            { id: 1, type: 'in', titleVi: 'Nhận lương tháng 02', titleEn: 'February Salary', desc: 'CONGVY TECH CORP', amount: 18500000, timeVi: 'Hôm nay, 08:30', timeEn: 'Today, 08:30' },
+            { id: 2, type: 'out', titleVi: 'Chuyển tiền Vietcombank', titleEn: 'Transfer to Vietcombank', desc: 'Nguyen Van A', amount: -1250000, timeVi: 'Hôm qua, 14:15', timeEn: 'Yesterday, 14:15' },
+            { id: 3, type: 'out', titleVi: 'Thanh toán điện lực', titleEn: 'Electricity Bill', desc: 'EVN Ha Noi', amount: -480000, timeVi: '28/02/2026', timeEn: 'Feb 28, 2026' },
+            { id: 4, type: 'in', titleVi: 'Hoàn tiền dịch vụ', titleEn: 'Cashback Reward', desc: 'VHMA CashBack', amount: 150000, timeVi: '25/02/2026', timeEn: 'Feb 25, 2026' }
+        ];
+
+        let transactions = localStorage.getItem('vhma_transactions') ? JSON.parse(localStorage.getItem('vhma_transactions')) : defaultTransactions;
+
+        function saveDataToStorage() {
+            localStorage.setItem('vhma_balance', currentBalance);
+            localStorage.setItem('vhma_usd_balance', currentUsdBalance);
+            localStorage.setItem('vhma_savings_balance', currentSavingsBalance);
+            localStorage.setItem('vhma_stock_balance', currentStockBalance);
+            localStorage.setItem('vhma_stock_portfolio', JSON.stringify(stockPortfolio));
+            localStorage.setItem('vhma_transactions', JSON.stringify(transactions));
+        }
+
+        let translations = {
+            vi: {
+                greeting: "Xin chào,",
+                accType: "Tài khoản thanh toán",
+                transfer: "Chuyển tiền",
+                deposit: "Nạp tiền",
+                savings: "Tiết kiệm",
+                qr: "Quét QR",
+                utilities: "Tiện ích thông minh",
+                util1: "Điện / Nước",
+                util2: "Nạp ĐT",
+                util3: "Vé máy bay",
+                util4: "Vay nhanh",
+                recentTx: "Giao dịch gần đây",
+                seeAll: "Xem tất cả",
+                historyTitle: "Lịch sử giao dịch",
+                filterAll: "Tất cả",
+                filterIn: "Tiền vào",
+                filterOut: "Tiền ra",
+                cardsTitle: "Quản lý Thẻ",
+                cardHolder: "CHỦ THẺ",
+                cardExp: "HẾT HẠN",
+                lockCard: "Khóa thẻ tạm thời",
+                onlinePay: "Thanh toán quốc tế (Online)",
+                utilTitle: "Tiện ích tài chính",
+                stockTitle: "Danh mục Blue-chip",
+                stockSubtitle: "VCB, VIC, FPT, VNM • Ủy thác chuyên nghiệp",
+                btnAddStock: "Chi tiết",
+                btnAddStockMoney: "Nạp thêm",
+                btnWithdrawStock: "Rút về TK chính",
+                btnAddSavings: "Gửi thêm",
+                btnWithdrawSavings: "Rút về TK chính",
+                stock: "Đầu tư chứng khoán",
+                stockDesc: "Danh mục VN30 và cổ phiếu tập đoàn lớn.",
+                insurance: "Bảo hiểm số",
+                insDesc: "Bảo vệ sức khỏe và tài sản chỉ với 1 chạm.",
+                membership: "Hạng: Khách hàng Kim Cương",
+                bioSetting: "Xác thực sinh trắc học",
+                passSetting: "Đổi mật khẩu đăng nhập",
+                logout: "Đăng xuất hệ thống",
+                navHome: "Trang chủ",
+                navHistory: "Lịch sử",
+                navCards: "Thẻ",
+                navUtilities: "Tiện ích",
+                navProfile: "Cá nhân",
+                langBtn: "EN / VI",
+                globalEyeShow: "Hiển thị",
+                globalEyeHide: "Ẩn số dư"
+            },
+            en: {
+                greeting: "Welcome back,",
+                accType: "Payment Account",
+                transfer: "Transfer",
+                deposit: "Top-up",
+                savings: "Savings",
+                qr: "Scan QR",
+                utilities: "Smart Utilities",
+                util1: "Electricity",
+                util2: "Mobile Top-up",
+                util3: "Flights",
+                util4: "Quick Loan",
+                recentTx: "Recent Transactions",
+                seeAll: "See all",
+                historyTitle: "Transaction History",
+                filterAll: "All",
+                filterIn: "Incoming",
+                filterOut: "Outgoing",
+                cardsTitle: "Card Management",
+                cardHolder: "CARD HOLDER",
+                cardExp: "EXPIRES",
+                lockCard: "Temporary Card Lock",
+                onlinePay: "International Online Payment",
+                utilTitle: "Financial Utilities",
+                stockTitle: "Blue-chip Portfolio",
+                stockSubtitle: "VCB, VIC, FPT, VNM • Managed Portfolio",
+                btnAddStock: "Details",
+                btnAddStockMoney: "Invest More",
+                btnWithdrawStock: "Withdraw to Main",
+                btnAddSavings: "Add More",
+                btnWithdrawSavings: "Withdraw to Main",
+                stock: "Stock Investment",
+                stockDesc: "VN30 & Large-Cap Portfolio Management.",
+                insurance: "Digital Insurance",
+                insDesc: "Protect your health and assets with 1 tap.",
+                membership: "Tier: Diamond Customer",
+                bioSetting: "Biometric Authentication",
+                passSetting: "Change Login Password",
+                logout: "Sign Out",
+                navHome: "Home",
+                navHistory: "History",
+                navCards: "Cards",
+                navUtilities: "Utilities",
+                navProfile: "Profile",
+                langBtn: "VI / EN",
+                globalEyeShow: "Show",
+                globalEyeHide: "Hide balance"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'vi' ? 'en' : 'vi';
+            updateTexts();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+        }
+
+        function updateTexts() {
+            const t = translations[currentLang];
+            document.getElementById('lbl-greeting').innerText = t.greeting;
+            document.getElementById('lbl-acc-type').innerText = t.accType;
+            document.getElementById('btn-transfer').innerText = t.transfer;
+            document.getElementById('btn-deposit').innerText = t.deposit;
+            document.getElementById('btn-savings').innerText = t.savings;
+            document.getElementById('btn-qr').innerText = t.qr;
+            document.getElementById('lbl-utilities').innerText = t.utilities;
+            document.getElementById('util-1').innerText = t.util1;
+            document.getElementById('util-2').innerText = t.util2;
+            document.getElementById('util-3').innerText = t.util3;
+            document.getElementById('util-4').innerText = t.util4;
+            document.getElementById('lbl-recent-tx').innerText = t.recentTx;
+            document.getElementById('lbl-see-all').innerText = t.seeAll;
+            document.getElementById('lbl-history-title').innerText = t.historyTitle;
+            document.getElementById('filter-all').innerText = t.filterAll;
+            document.getElementById('filter-in').innerText = t.filterIn;
+            document.getElementById('filter-out').innerText = t.filterOut;
+            document.getElementById('lbl-cards-title').innerText = t.cardsTitle;
+            document.getElementById('lbl-card-holder').innerText = t.cardHolder;
+            document.getElementById('lbl-card-exp').innerText = t.cardExp;
+            document.getElementById('lbl-lock-card').innerText = t.lockCard;
+            document.getElementById('lbl-online-pay').innerText = t.onlinePay;
+            document.getElementById('lbl-util-title').innerText = t.utilTitle;
+            document.getElementById('lbl-stock-title').innerText = t.stockTitle;
+            document.getElementById('lbl-stock-subtitle').innerText = t.stockSubtitle;
+            document.getElementById('btn-add-stock').innerText = t.btnAddStock;
+            document.getElementById('btn-add-stock-money').innerText = t.btnAddStockMoney;
+            document.getElementById('btn-withdraw-stock').innerText = t.btnWithdrawStock;
+            document.getElementById('btn-add-savings').innerText = t.btnAddSavings;
+            document.getElementById('btn-withdraw-savings').innerText = t.btnWithdrawSavings;
+            document.getElementById('lbl-stock').innerText = t.stock;
+            document.getElementById('lbl-stock-desc').innerText = t.stockDesc;
+            document.getElementById('lbl-insurance').innerText = t.insurance;
+            document.getElementById('lbl-ins-desc').innerText = t.insDesc;
+            document.getElementById('lbl-membership').innerText = t.membership;
+            document.getElementById('lbl-bio-setting').innerHTML = `<i class="fa-regular fa-id-card w-5 text-blue-400 text-xs"></i> ${t.bioSetting}`;
+            document.getElementById('lbl-pass-setting').innerHTML = `<i class="fa-regular fa-key w-5 text-blue-400 text-xs"></i> ${t.passSetting}`;
+            document.getElementById('lbl-logout').innerHTML = `<i class="fa-regular fa-arrow-right-from-bracket w-5 text-xs"></i> ${t.logout}`;
+            document.getElementById('nav-t-home').innerText = t.navHome;
+            document.getElementById('nav-t-history').innerText = t.navHistory;
+            document.getElementById('nav-t-cards').innerText = t.navCards;
+            document.getElementById('nav-t-utilities').innerText = t.navUtilities;
+            document.getElementById('nav-t-profile').innerText = t.navProfile;
+            document.getElementById('lang-btn').innerText = t.langBtn;
+            document.getElementById('global-eye-text').innerText = isGlobalBalanceVisible ? t.globalEyeHide : t.globalEyeShow;
+        }
+
+        function formatMoney(amount) {
+            return amount.toLocaleString('vi-VN') + ' đ';
+        }
+
+        function formatUsd(amount) {
+            return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function toggleGlobalBalance() {
+            isGlobalBalanceVisible = !isGlobalBalanceVisible;
+            const globalEyeIcon = document.getElementById('global-eye-icon');
+            const globalEyeText = document.getElementById('global-eye-text');
+            const t = translations[currentLang];
+
+            if (isGlobalBalanceVisible) {
+                globalEyeIcon.className = 'fa-regular fa-eye text-blue-400';
+                globalEyeText.innerText = t.globalEyeHide;
+            } else {
+                globalEyeIcon.className = 'fa-regular fa-eye-slash text-slate-300';
+                globalEyeText.innerText = t.globalEyeShow;
+            }
+            updateAllBalancesUI();
+        }
+
+        function updateAllBalancesUI() {
+            const balanceText = document.getElementById('balance-text');
+            const usdBalanceText = document.getElementById('usd-balance-text');
+            const savingsText = document.getElementById('savings-balance-text');
+            const stockText = document.getElementById('stock-balance-text');
+
+            currentStockBalance = stockPortfolio.vcb + stockPortfolio.vic + stockPortfolio.fpt + stockPortfolio.vnm;
+
+            if (isGlobalBalanceVisible) {
+                balanceText.innerText = formatMoney(currentBalance);
+                usdBalanceText.innerText = formatUsd(currentUsdBalance);
+                savingsText.innerText = formatMoney(currentSavingsBalance);
+                stockText.innerText = formatMoney(currentStockBalance);
+            } else {
+                balanceText.innerText = '••••••••';
+                usdBalanceText.innerText = '$••••';
+                savingsText.innerText = '••••••••';
+                stockText.innerText = '••••••••';
+            }
+
+            const warningElement = document.getElementById('usd-warning-box');
+            if (currentUsdBalance < 100) {
+                warningElement.style.display = 'flex';
+            } else {
+                warningElement.style.display = 'none';
+            }
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['home', 'history', 'cards', 'utilities', 'profile'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = 'flex flex-col items-center text-slate-300 hover:text-white transition';
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).className = 'flex flex-col items-center text-blue-500 transition';
+            if(tabId === 'history') renderTransactions(transactions);
+        }
+
+        function renderTransactions(list) {
+            const homeHtml = list.slice(0, 3).map(tx => txItemHtml(tx)).join('');
+            const fullHtml = list.map(tx => txItemHtml(tx)).join('');
+            document.getElementById('home-tx-list').innerHTML = homeHtml;
+            document.getElementById('full-tx-list').innerHTML = fullHtml;
+        }
+
+        function txItemHtml(tx) {
+            const isPlus = tx.type === 'in';
+            const title = currentLang === 'vi' ? tx.titleVi : tx.titleEn;
+            const time = currentLang === 'vi' ? tx.timeVi : tx.timeEn;
+            return `
+                <div class="bg-slate-900/70 border border-slate-800/70 p-2.5 rounded-xl flex items-center justify-between group">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg ${isPlus ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'} flex items-center justify-center font-bold text-xs">
+                            <i class="fa-solid ${isPlus ? 'fa-arrow-down' : 'fa-arrow-up'} text-xs"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-[11px] font-semibold text-white leading-tight">${title}</h4>
+                            <p class="text-[9px] text-slate-300 leading-tight mt-0.5">${tx.desc} • ${time}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[11px] font-bold ${isPlus ? 'text-emerald-400' : 'text-white'}">
+                            ${isPlus ? '+' : ''}${formatMoney(tx.amount)}
+                        </span>
+                        <button onclick="deleteTransaction(${tx.id})" class="text-slate-500 hover:text-red-400 transition p-1" title="Xóa giao dịch">
+                            <i class="fa-regular fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function deleteTransaction(id) {
+            transactions = transactions.filter(tx => tx.id !== id);
+            saveDataToStorage();
+            renderTransactions(transactions);
+            showNotification(currentLang === 'vi' ? 'Đã xóa giao dịch!' : 'Transaction deleted!');
+        }
+
+        function filterTransactions(type) {
+            if(type === 'all') renderTransactions(transactions);
+            else {
+                const filtered = transactions.filter(t => t.type === type);
+                renderTransactions(filtered);
+            }
+        }
+
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            modal.classList.remove('hidden');
+
+            if(type === 'transfer') {
+                title.innerText = currentLang === 'vi' ? 'Chuyển tiền nhanh / Nội bộ' : 'Quick / Internal Transfer';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Chọn tài khoản đích nội bộ' : 'Select internal recipient'}</label>
+                        <select id="internal-recipient" onchange="document.getElementById('recv-account').value = this.value" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 mb-2">
+                            <option value="">-- Chọn tài khoản của tôi / Danh bạ --</option>
+                            <option value="1900 8888 6688">Tài khoản chính (VHMA-CORE) - 1900 8888 6688</option>
+                            <option value="VHMA-SAVINGS">Tài khoản Tiết kiệm Online - VHMA-SAVINGS</option>
+                            <option value="VHMA-VN30">Danh mục Đầu tư Blue-chip - VN30</option>
+                            <option value="USD-CORE 7322">Tài khoản USD - •••• 7322</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tài khoản / Số thẻ nhận' : 'Account / Card Number'}</label>
+                        <input type="text" id="recv-account" placeholder="Nhập số tài khoản..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền chuyển (đ)' : 'Amount (VND)'}</label>
+                        <input type="number" id="transfer-amount" placeholder="0" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Nội dung chuyển tiền' : 'Description'}</label>
+                        <input type="text" id="transfer-desc" placeholder="Chuyển tiền nội bộ..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button onclick="executeTransfer()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-blue-600/30 text-xs">${currentLang === 'vi' ? 'Xác thực giao dịch' : 'Authorize Transaction'}</button>
+                `;
+            } else if(type === 'deposit') {
+                title.innerText = currentLang === 'vi' ? 'Nạp tiền vào tài khoản' : 'Deposit Account';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền nạp (đ)' : 'Amount (VND)'}</label>
+                        <input type="number" id="deposit-amount" placeholder="Nhập số tiền nạp..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <button onclick="executeDeposit()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-blue-600/30 text-xs">${currentLang === 'vi' ? 'Xác nhận nạp tiền' : 'Confirm Deposit'}</button>
+                `;
+            } else if(type === 'savings') {
+                title.innerText = currentLang === 'vi' ? 'Mở tài khoản tiết kiệm online' : 'Open Online Savings';
+                body.innerHTML = `
+                    <div class="bg-blue-500/10 border border-blue-500/20 p-3 rounded-xl text-center">
+                        <span class="text-[10px] text-blue-300">${currentLang === 'vi' ? 'Lãi suất kỳ hạn 6 tháng' : '6-Month Interest Rate'}</span>
+                        <h4 class="text-lg font-bold text-blue-400 mt-0.5">6.8% / year</h4>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền gửi tiết kiệm (đ)' : 'Savings Amount (VND)'}</label>
+                        <input type="number" id="savings-amount" placeholder="Tối thiểu 1,000,000 đ" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <button onclick="executeSavings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-blue-600/30 text-xs">${currentLang === 'vi' ? 'Xác nhận gửi tiết kiệm' : 'Confirm Savings'}</button>
+                `;
+            } else if(type === 'savings-withdraw') {
+                title.innerText = currentLang === 'vi' ? 'Rút tiền tiết kiệm về TK chính' : 'Withdraw Savings to Main';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền muốn rút (đ)' : 'Withdraw Amount (VND)'}</label>
+                        <input type="number" id="savings-withdraw-amount" placeholder="Nhập số tiền rút..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono">
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${currentLang === 'vi' ? '* Tiền tiết kiệm sẽ được rút và chuyển trực tiếp về Tài khoản thanh toán (VHMA-CORE).' : '* Transferred back to main account.'}</p>
+                    <button onclick="executeSavingsWithdraw()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-amber-600/30 text-xs mt-2">${currentLang === 'vi' ? 'Xác nhận rút về TK chính' : 'Confirm Withdrawal'}</button>
+                `;
+            } else if(type === 'stock-deposit') {
+                title.innerText = currentLang === 'vi' ? 'Nạp thêm vốn đầu tư Blue-chip' : 'Invest More in Blue-chip';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền đầu tư thêm (đ) - Trừ từ TK chính' : 'Investment Amount (VND)'}</label>
+                        <input type="number" id="stock-deposit-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500 font-mono">
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${currentLang === 'vi' ? '* Trừ từ TK chính và phân bổ theo tỷ trọng VCB (35%), VIC (25%), FPT (25%), VNM (15%).' : '* Deducted from main account and allocated.'}</p>
+                    <button onclick="executeStockDeposit()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-purple-600/30 text-xs mt-2">${currentLang === 'vi' ? 'Xác nhận nạp vốn' : 'Confirm Investment'}</button>
+                `;
+            } else if(type === 'stock-withdraw') {
+                title.innerText = currentLang === 'vi' ? 'Rút tiền đầu tư về Tài khoản chính' : 'Withdraw to Main Account';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền muốn rút về (đ)' : 'Withdraw Amount (VND)'}</label>
+                        <input type="number" id="stock-withdraw-amount" placeholder="Nhập số tiền rút..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono">
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">${currentLang === 'vi' ? '* Tiền sẽ được rút từ danh mục chứng khoán và chuyển trực tiếp về Tài khoản thanh toán (VHMA-CORE).' : '* Transferred back to main account.'}</p>
+                    <button onclick="executeStockWithdraw()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-amber-600/30 text-xs mt-2">${currentLang === 'vi' ? 'Xác nhận rút về TK chính' : 'Confirm Withdrawal'}</button>
+                `;
+            } else if(type === 'stock') {
+                title.innerText = currentLang === 'vi' ? 'Chi tiết Danh mục Blue-chip (VN30)' : 'Portfolio Asset Allocation';
+                body.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-[10px]">VCB</div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white">Ngân hàng TMCP Ngoại thương</div>
+                                    <div class="text-[9px] text-slate-300">Tỷ trọng: 35.0% • Lợi nhuận: +22.4%</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold text-emerald-400">${formatMoney(stockPortfolio.vcb)}</span>
+                        </div>
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-[10px]">VIC</div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white">Tập đoàn Vingroup - CTCP</div>
+                                    <div class="text-[9px] text-slate-300">Tỷ trọng: 25.0% • Lợi nhuận: +14.1%</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold text-emerald-400">${formatMoney(stockPortfolio.vic)}</span>
+                        </div>
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-[10px]">FPT</div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white">Công ty Cổ phần FPT</div>
+                                    <div class="text-[9px] text-slate-300">Tỷ trọng: 25.0% • Lợi nhuận: +28.6%</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold text-emerald-400">${formatMoney(stockPortfolio.fpt)}</span>
+                        </div>
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-[10px]">VNM</div>
+                                <div>
+                                    <div class="text-[11px] font-bold text-white">CTCP Sữa Việt Nam (Vinamilk)</div>
+                                    <div class="text-[9px] text-slate-300">Tỷ trọng: 15.0% • Lợi nhuận: +8.5%</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold text-emerald-400">${formatMoney(stockPortfolio.vnm)}</span>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-purple-600/30 text-xs mt-1">${currentLang === 'vi' ? 'Đóng' : 'Close'}</button>
+                `;
+            } else if(type === 'qr') {
+                title.innerText = currentLang === 'vi' ? 'Quét mã QR thanh toán' : 'Scan QR to Pay';
+                body.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-4">
+                        <div onclick="simulateScanQR()" class="w-36 h-36 border-2 border-dashed border-blue-500/60 rounded-xl flex items-center justify-center bg-slate-950 cursor-pointer hover:border-blue-400 transition group">
+                            <i class="fa-solid fa-qrcode text-5xl text-blue-400 group-hover:scale-105 transition animate-pulse"></i>
+                        </div>
+                        <p class="text-[10px] text-slate-300 mt-3 text-center">${currentLang === 'vi' ? 'Chạm vào mã QR để mô phỏng quét VietQR' : 'Tap QR code to simulate scanning'}</p>
+                    </div>
+                `;
+            } else if(type === 'usd-deposit') {
+                title.innerText = currentLang === 'vi' ? 'Nạp tiền vào tài khoản USD' : 'Deposit USD Account';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền nạp ($)' : 'Amount (USD)'}</label>
+                        <input type="number" id="usd-deposit-amount" placeholder="Nhập số USD..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                    </div>
+                    <button onclick="executeUsdDeposit()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-emerald-600/30 text-xs">${currentLang === 'vi' ? 'Xác nhận nạp USD' : 'Confirm USD Deposit'}</button>
+                `;
+            } else if(type === 'usd-transfer') {
+                title.innerText = currentLang === 'vi' ? 'Chuyển ngoại tệ USD' : 'Transfer USD';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Chọn tài khoản USD đích nội bộ' : 'Select internal USD recipient'}</label>
+                        <select onchange="document.getElementById('usd-recv-account').value = this.value" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 mb-2">
+                            <option value="">-- Chọn tài khoản của tôi --</option>
+                            <option value="USD-CORE 7322">Tài khoản USD chính - •••• 7322</option>
+                            <option value="USD-SAVINGS">Tài khoản Tiết kiệm USD</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tài khoản nhận' : 'Receiver Account'}</label>
+                        <input type="text" id="usd-recv-account" placeholder="..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">${currentLang === 'vi' ? 'Số tiền chuyển ($)' : 'Amount (USD)'}</label>
+                        <input type="number" id="usd-transfer-amount" placeholder="0" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                    </div>
+                    <button onclick="executeUsdTransfer()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-lg transition shadow-md shadow-emerald-600/30 text-xs">${currentLang === 'vi' ? 'Xác thực chuyển USD' : 'Authorize USD Transfer'}</button>
+                `;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function executeTransfer() {
+            const amount = parseInt(document.getElementById('transfer-amount').value);
+            const desc = document.getElementById('transfer-desc').value || 'Quick Transfer';
+            const recv = document.getElementById('recv-account').value;
+
+            if(!recv || isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập đầy đủ thông tin!' : 'Please fill in all fields!');
+                return;
+            }
+
+            if(amount > currentBalance) {
+                showNotification(currentLang === 'vi' ? 'Số dư tài khoản không đủ!' : 'Insufficient balance!');
+                return;
+            }
+
+            currentBalance -= amount;
+            transactions.unshift({
+                id: Date.now(),
+                type: 'out',
+                titleVi: `Chuyển đến ${recv}`,
+                titleEn: `Transfer to ${recv}`,
+                desc: desc,
+                amount: -amount,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Chuyển tiền thành công!' : 'Transfer successful!');
+        }
+
+        function executeDeposit() {
+            const amount = parseInt(document.getElementById('deposit-amount').value);
+            
+            if(isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập số tiền hợp lệ!' : 'Please enter a valid amount!');
+                return;
+            }
+
+            currentBalance += amount;
+            transactions.unshift({
+                id: Date.now(),
+                type: 'in',
+                titleVi: 'Nạp tiền vào tài khoản thanh toán',
+                titleEn: 'Account Deposit',
+                desc: 'Napas / Internet Banking',
+                amount: amount,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Nạp tiền thành công!' : 'Deposit successful!');
+        }
+
+        function executeUsdDeposit() {
+            const amount = parseFloat(document.getElementById('usd-deposit-amount').value);
+            
+            if(isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập số tiền USD hợp lệ!' : 'Please enter a valid USD amount!');
+                return;
+            }
+
+            currentUsdBalance += amount;
+            updateAllBalancesUI();
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'in',
+                titleVi: 'Nạp tiền vào tài khoản USD',
+                titleEn: 'USD Account Deposit',
+                desc: 'USD-CORE •••• 7322',
+                amount: amount * 25400,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+            
+            saveDataToStorage();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Nạp USD thành công!' : 'USD Deposit successful!');
+        }
+
+        function executeUsdTransfer() {
+            const amount = parseFloat(document.getElementById('usd-transfer-amount').value);
+            const recv = document.getElementById('usd-recv-account').value;
+
+            if(!recv || isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập đầy đủ thông tin!' : 'Please fill in all fields!');
+                return;
+            }
+
+            if(amount > currentUsdBalance) {
+                showNotification(currentLang === 'vi' ? 'Số dư tài khoản USD không đủ!' : 'Insufficient USD balance!');
+                return;
+            }
+
+            currentUsdBalance -= amount;
+            updateAllBalancesUI();
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'out',
+                titleVi: `Chuyển USD đến ${recv}`,
+                titleEn: `Transfer USD to ${recv}`,
+                desc: 'USD Wire Transfer',
+                amount: -(amount * 25400),
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Chuyển USD thành công!' : 'USD Transfer successful!');
+        }
+
+        function executeSavings() {
+            const amount = parseInt(document.getElementById('savings-amount').value);
+            
+            if(isNaN(amount) || amount < 1000000) {
+                showNotification(currentLang === 'vi' ? 'Số tiền gửi tiết kiệm tối thiểu là 1,000,000 đ!' : 'Minimum savings amount is 1,000,000 VND!');
+                return;
+            }
+
+            if(amount > currentBalance) {
+                showNotification(currentLang === 'vi' ? 'Số dư tài khoản thanh toán không đủ!' : 'Insufficient payment balance!');
+                return;
+            }
+
+            currentBalance -= amount;
+            currentSavingsBalance += amount;
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'out',
+                titleVi: 'Gửi tiết kiệm online kỳ hạn 6 tháng',
+                titleEn: 'Online Savings (6 Months)',
+                desc: 'VHMA Savings Account',
+                amount: -amount,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Mở tài khoản tiết kiệm thành công!' : 'Savings account opened successfully!');
+        }
+
+        function executeSavingsWithdraw() {
+            const amount = parseInt(document.getElementById('savings-withdraw-amount').value);
+
+            if(isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập số tiền rút hợp lệ!' : 'Please enter a valid withdrawal amount!');
+                return;
+            }
+
+            if(amount > currentSavingsBalance) {
+                showNotification(currentLang === 'vi' ? 'Số dư tài khoản tiết kiệm không đủ!' : 'Insufficient savings balance!');
+                return;
+            }
+
+            currentSavingsBalance -= amount;
+            currentBalance += amount;
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'in',
+                titleVi: 'Rút tiền tiết kiệm về tài khoản chính',
+                titleEn: 'Savings Withdrawal to Main Acc',
+                desc: 'VHMA Savings Account',
+                amount: amount,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Rút tiền tiết kiệm về TK chính thành công!' : 'Savings withdrawal successful!');
+        }
+
+        function executeStockDeposit() {
+            const amount = parseInt(document.getElementById('stock-deposit-amount').value);
+            
+            if(isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập số tiền đầu tư hợp lệ!' : 'Please enter a valid investment amount!');
+                return;
+            }
+
+            if(amount > currentBalance) {
+                showNotification(currentLang === 'vi' ? 'Số dư tài khoản thanh toán không đủ để nạp thêm!' : 'Insufficient main account balance!');
+                return;
+            }
+
+            currentBalance -= amount;
+
+            stockPortfolio.vcb += amount * 0.35;
+            stockPortfolio.vic += amount * 0.25;
+            stockPortfolio.fpt += amount * 0.25;
+            stockPortfolio.vnm += amount * 0.15;
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'out',
+                titleVi: 'Nạp thêm vốn đầu tư Blue-chip VN30',
+                titleEn: 'Blue-chip Portfolio Investment',
+                desc: 'VHMA Wealth Management',
+                amount: -amount,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Nạp vốn từ tài khoản chính thành công!' : 'Investment deposit successful!');
+        }
+
+        function executeStockWithdraw() {
+            const amount = parseInt(document.getElementById('stock-withdraw-amount').value);
+            currentStockBalance = stockPortfolio.vcb + stockPortfolio.vic + stockPortfolio.fpt + stockPortfolio.vnm;
+
+            if(isNaN(amount) || amount <= 0) {
+                showNotification(currentLang === 'vi' ? 'Vui lòng nhập số tiền rút hợp lệ!' : 'Please enter a valid withdrawal amount!');
+                return;
+            }
+
+            if(amount > currentStockBalance) {
+                showNotification(currentLang === 'vi' ? 'Số dư danh mục đầu tư không đủ để rút!' : 'Insufficient investment balance!');
+                return;
+            }
+
+            const ratio = amount / currentStockBalance;
+            stockPortfolio.vcb -= stockPortfolio.vcb * ratio;
+            stockPortfolio.vic -= stockPortfolio.vic * ratio;
+            stockPortfolio.fpt -= stockPortfolio.fpt * ratio;
+            stockPortfolio.vnm -= stockPortfolio.vnm * ratio;
+
+            currentBalance += amount;
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'in',
+                titleVi: 'Rút vốn đầu tư về tài khoản chính',
+                titleEn: 'Portfolio Withdrawal to Main Acc',
+                desc: 'VHMA Wealth Management',
+                amount: amount,
+                timeVi: 'Vừa xong',
+                timeEn: 'Just now'
+            });
+
+            saveDataToStorage();
+            updateAllBalancesUI();
+            renderTransactions(transactions);
+            closeModal();
+            showNotification(currentLang === 'vi' ? 'Rút tiền về tài khoản chính thành công!' : 'Withdrawal to main account successful!');
+        }
+
+        function simulateScanQR() {
+            closeModal();
+            openModal('transfer');
+            document.getElementById('recv-account').value = '190088889999';
+            document.getElementById('transfer-amount').value = '350000';
+            document.getElementById('transfer-desc').value = 'Thanh toán VietQR';
+            showNotification(currentLang === 'vi' ? 'Quét mã QR thành công!' : 'QR scanned successfully!');
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('vhma_user');
+            window.location.href = 'login.html';
+        }
+
+        function showNotification(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Initialize UI on load
+        updateAllBalancesUI();
+        renderTransactions(transactions);
+    </script>
+</body>
+</html>

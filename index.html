@@ -43,12 +43,12 @@
                 </div>
                 <div>
                     <h1 id="lbl-greeting" class="text-[10px] text-slate-300 font-normal">Xin chào,</h1>
-                    <p id="user-fullname" class="text-xs font-semibold text-white tracking-tight">Lê Minh</p>
+                    <p id="user-fullname" class="text-xs font-semibold text-white tracking-tight">Harry Bui</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="toggleGlobalBalance()" class="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-medium text-slate-200 hover:text-white transition flex items-center space-x-1.5" title="Ẩn/Hiện toàn bộ số dư">
-                    <i id="global-eye-icon" class="fa-regular fa-eye text-blue-400"></i>
+                    <i id="global-eye-icon" class="fa-regular fa-eye-slash text-slate-300"></i>
                     <span id="global-eye-text">Hiển thị</span>
                 </button>
                 <button onclick="toggleLanguage()" class="px-2 py-1 rounded-md bg-slate-900 border border-slate-800 text-[10px] font-semibold text-blue-400 hover:bg-slate-800 transition" id="lang-btn">
@@ -78,7 +78,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">VND 0</h2>
+                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">VND ••••••••</h2>
                                 <p class="text-[10px] text-slate-300 mt-0.5 font-mono">STK: 1900 8888 6688</p>
                             </div>
                         </div>
@@ -123,8 +123,8 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">USD 0.00</h2>
-                                <p id="usd-warning-box" class="text-[10px] text-amber-300 mt-0.5 font-medium items-center space-x-1" style="display: flex;">
+                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">USD ••••</h2>
+                                <p id="usd-warning-box" class="text-[10px] text-amber-300 mt-0.5 font-medium items-center space-x-1" style="display: none;">
                                     <i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
                                     <span>Số dư khả dụng dưới $100</span>
                                 </p>
@@ -154,7 +154,7 @@
                         </div>
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">VND 0</h2>
+                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">VND ••••••••</h2>
                                 <p class="text-[10px] text-slate-300 mt-0.5 font-normal">Kỳ hạn 6 tháng • Tự động tái tục</p>
                             </div>
                         </div>
@@ -182,7 +182,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">VND 0</h2>
+                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">VND ••••••••</h2>
                                 <p id="lbl-stock-subtitle" class="text-[10px] text-slate-300 mt-0.5 font-normal">VCB, VIC, FPT, VNM • Ủy thác chuyên nghiệp</p>
                             </div>
                         </div>
@@ -270,7 +270,7 @@
                     <div class="flex justify-between items-end">
                         <div>
                             <span id="lbl-card-holder" class="text-[9px] text-slate-300 block">CHỦ THẺ</span>
-                            <span class="text-[11px] font-semibold text-white tracking-wide">LE MINH</span>
+                            <span id="card-holder-name" class="text-[11px] font-semibold text-white tracking-wide uppercase">HARRY BUI</span>
                         </div>
                         <div>
                             <span id="lbl-card-exp" class="text-[9px] text-slate-300 block">HẾT HẠN</span>
@@ -315,10 +315,10 @@
             <div id="tab-profile" class="space-y-3 px-4 pt-3 hidden">
                 <div class="flex flex-col items-center py-2">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 p-0.5 mb-2">
-                        <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-xl font-bold text-white">LM</div>
+                        <div id="profile-avatar-text" class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-xl font-bold text-white">HB</div>
                     </div>
-                    <h2 class="text-xs font-bold text-white profile-name-text">Lê Minh</h2>
-                    <p class="text-[10px] text-slate-300 font-mono">ID: minhle20018</p>
+                    <h2 class="text-xs font-bold text-white profile-name-text">Harry Bui</h2>
+                    <p id="profile-id-text" class="text-[10px] text-slate-300 font-mono">ID: harrybui</p>
                     <span id="lbl-membership" class="mt-1.5 bg-blue-500/15 text-blue-300 text-[9px] font-medium px-2.5 py-0.5 rounded-full border border-blue-500/20">Hạng: Khách hàng Kim Cương</span>
                 </div>
                 <div class="bg-slate-900/70 border border-slate-800/80 rounded-xl overflow-hidden text-xs">
@@ -388,13 +388,22 @@
         if (!loggedUser) {
             window.location.href = 'login.html';
         } else {
-            document.getElementById('user-fullname').innerText = loggedUser;
+            let displayName = "Harry Bui"; 
+
+            document.getElementById('user-fullname').innerText = displayName;
+            document.querySelectorAll('.profile-name-text').forEach(el => el.innerText = displayName);
+            document.getElementById('card-holder-name').innerText = displayName.toUpperCase();
+            document.getElementById('profile-id-text').innerText = "ID: " + loggedUser;
+            
+            let initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
+            if(initials.length > 2) initials = initials.substring(0, 2);
+            document.getElementById('profile-avatar-text').innerText = initials;
         }
 
         let currentLang = 'vi';
-        let isGlobalBalanceVisible = true;
+        // Đặt mặc định là FALSE để khi vừa vào ứng dụng số dư bị ẩn đi
+        let isGlobalBalanceVisible = false;
 
-        // Khởi tạo dữ liệu khôi phục từ localStorage (giữ nguyên vẹn qua mọi phiên thao tác)
         let currentBalance = localStorage.getItem('vhma_balance') !== null ? parseInt(localStorage.getItem('vhma_balance')) : 457000000000;
         let currentUsdBalance = localStorage.getItem('vhma_usd_balance') !== null ? parseFloat(localStorage.getItem('vhma_usd_balance')) : 190085.50;
         let currentSavingsBalance = localStorage.getItem('vhma_savings_balance') !== null ? parseInt(localStorage.getItem('vhma_savings_balance')) : 5000000;
@@ -416,7 +425,6 @@
 
         let transactions = localStorage.getItem('vhma_transactions') ? JSON.parse(localStorage.getItem('vhma_transactions')) : defaultTransactions;
 
-        // Hàm ghi dữ liệu vĩnh viễn vào bộ nhớ thiết bị
         function saveDataToStorage() {
             localStorage.setItem('vhma_balance', currentBalance);
             localStorage.setItem('vhma_usd_balance', currentUsdBalance);
@@ -581,12 +589,10 @@
             document.getElementById('global-eye-text').innerText = isGlobalBalanceVisible ? t.globalEyeHide : t.globalEyeShow;
         }
 
-        // Định dạng VND đặt phía trước: "VND 4,667,561"
         function formatMoney(amount) {
             return 'VND ' + amount.toLocaleString('vi-VN');
         }
 
-        // Định dạng USD đặt phía trước: "USD 190,085.50"
         function formatUsd(amount) {
             return 'USD ' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
@@ -628,7 +634,7 @@
             }
 
             const warningElement = document.getElementById('usd-warning-box');
-            if (currentUsdBalance < 100) {
+            if (isGlobalBalanceVisible && currentUsdBalance < 100) {
                 warningElement.style.display = 'flex';
             } else {
                 warningElement.style.display = 'none';

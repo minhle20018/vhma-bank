@@ -394,6 +394,7 @@
         let currentLang = 'vi';
         let isGlobalBalanceVisible = true;
 
+        // Khởi tạo dữ liệu từ localStorage (Đảm bảo lưu giữ liệu vĩnh viễn không bị mất khi thoát app)
         let currentBalance = localStorage.getItem('vhma_balance') !== null ? parseInt(localStorage.getItem('vhma_balance')) : 457000000000;
         let currentUsdBalance = localStorage.getItem('vhma_usd_balance') !== null ? parseFloat(localStorage.getItem('vhma_usd_balance')) : 190085.50;
         let currentSavingsBalance = localStorage.getItem('vhma_savings_balance') !== null ? parseInt(localStorage.getItem('vhma_savings_balance')) : 5000000;
@@ -423,6 +424,9 @@
             localStorage.setItem('vhma_stock_portfolio', JSON.stringify(stockPortfolio));
             localStorage.setItem('vhma_transactions', JSON.stringify(transactions));
         }
+
+        // Lưu ngay trạng thái hiện tại khi khởi chạy
+        saveDataToStorage();
 
         let translations = {
             vi: {

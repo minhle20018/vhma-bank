@@ -78,7 +78,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">0 đ</h2>
+                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">VND 0</h2>
                                 <p class="text-[10px] text-slate-300 mt-0.5 font-mono">STK: 1900 8888 6688</p>
                             </div>
                         </div>
@@ -123,7 +123,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">$0.00</h2>
+                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">USD 0.00</h2>
                                 <p id="usd-warning-box" class="text-[10px] text-amber-300 mt-0.5 font-medium items-center space-x-1" style="display: flex;">
                                     <i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
                                     <span>Số dư khả dụng dưới $100</span>
@@ -154,7 +154,7 @@
                         </div>
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">0 đ</h2>
+                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">VND 0</h2>
                                 <p class="text-[10px] text-slate-300 mt-0.5 font-normal">Kỳ hạn 6 tháng • Tự động tái tục</p>
                             </div>
                         </div>
@@ -182,7 +182,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">0 đ</h2>
+                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">VND 0</h2>
                                 <p id="lbl-stock-subtitle" class="text-[10px] text-slate-300 mt-0.5 font-normal">VCB, VIC, FPT, VNM • Ủy thác chuyên nghiệp</p>
                             </div>
                         </div>
@@ -581,12 +581,14 @@
             document.getElementById('global-eye-text').innerText = isGlobalBalanceVisible ? t.globalEyeHide : t.globalEyeShow;
         }
 
+        // Định dạng VND đặt phía trước: "VND 4,667,561"
         function formatMoney(amount) {
-            return amount.toLocaleString('vi-VN') + ' đ';
+            return 'VND ' + amount.toLocaleString('vi-VN');
         }
 
+        // Định dạng USD đặt phía trước: "USD 190,085.50"
         function formatUsd(amount) {
-            return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return 'USD ' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function toggleGlobalBalance() {
@@ -619,10 +621,10 @@
                 savingsText.innerText = formatMoney(currentSavingsBalance);
                 stockText.innerText = formatMoney(currentStockBalance);
             } else {
-                balanceText.innerText = '••••••••';
-                usdBalanceText.innerText = '$••••';
-                savingsText.innerText = '••••••••';
-                stockText.innerText = '••••••••';
+                balanceText.innerText = 'VND ••••••••';
+                usdBalanceText.innerText = 'USD ••••';
+                savingsText.innerText = 'VND ••••••••';
+                stockText.innerText = 'VND ••••••••';
             }
 
             const warningElement = document.getElementById('usd-warning-box');

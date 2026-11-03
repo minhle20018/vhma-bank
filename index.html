@@ -61,18 +61,18 @@
             <!-- TAB 1: HOME SCREEN -->
             <div id="tab-home" class="space-y-4 px-4 pt-3">
                 
-                <!-- WIDGET HIỂN THỊ SỐ DƯ TỔNG QUAN (CÓ NÚT CON MẮT)[cite: 5] -->
+                <!-- WIDGET SỐ DƯ HIỆN CÓ -->
                 <div class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-4 shadow-lg flex items-center justify-between">
                     <div>
-                        <span class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold">Số dư hiện có</span>[cite: 5]
-                        <h2 id="global-balance-preview" class="text-base font-bold text-white tracking-tight mt-0.5">********</h2>[cite: 5]
+                        <span class="text-[10px] text-slate-300 uppercase tracking-wider font-semibold">Số dư hiện có</span>
+                        <h2 id="global-balance-preview" class="text-base font-bold text-white tracking-tight mt-0.5">********</h2>
                     </div>
                     <button onclick="toggleGlobalBalance()" class="w-9 h-9 rounded-xl bg-slate-800/80 flex items-center justify-center text-slate-300 hover:text-white transition">
                         <i id="preview-eye-icon" class="fa-regular fa-eye-slash text-sm"></i>
                     </button>
                 </div>
 
-                <!-- MULTI-CURRENCY & ASSET ACCOUNTS CONTAINER -->
+                <!-- ACCOUNTS CONTAINER -->
                 <div id="accounts-container" class="space-y-3">
                     
                     <!-- TÀI KHOẢN THANH TOÁN VND -->
@@ -87,7 +87,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>[cite: 5]
+                                <h2 id="balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>
                                 <p class="text-[10px] text-slate-300 mt-0.5 font-mono">STK: 1900 8888 6688</p>
                             </div>
                             <button onclick="toggleGlobalBalance()" class="text-slate-400 hover:text-white p-1.5">
@@ -135,7 +135,11 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>[cite: 5]
+                                <h2 id="usd-balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>
+                                <p id="usd-warning-box" class="text-[10px] text-amber-300 mt-0.5 font-medium items-center space-x-1" style="display: none;">
+                                    <i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
+                                    <span>Số dư khả dụng dưới $100</span>
+                                </p>
                             </div>
                             <button onclick="toggleGlobalBalance()" class="text-slate-400 hover:text-white p-1.5">
                                 <i class="fa-regular fa-eye-slash account-eye-icon"></i>
@@ -165,7 +169,7 @@
                         </div>
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>[cite: 5]
+                                <h2 id="savings-balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>
                                 <p class="text-[10px] text-slate-300 mt-0.5 font-normal">Kỳ hạn 6 tháng • Tự động tái tục</p>
                             </div>
                             <button onclick="toggleGlobalBalance()" class="text-slate-400 hover:text-white p-1.5">
@@ -196,7 +200,7 @@
 
                         <div class="flex items-center justify-between my-2">
                             <div>
-                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>[cite: 5]
+                                <h2 id="stock-balance-text" class="text-lg font-bold text-white tracking-tight">********</h2>
                                 <p id="lbl-stock-subtitle" class="text-[10px] text-slate-300 mt-0.5 font-normal">VCB, VIC, FPT, VNM • Ủy thác chuyên nghiệp</p>
                             </div>
                             <button onclick="toggleGlobalBalance()" class="text-slate-400 hover:text-white p-1.5">
@@ -378,33 +382,29 @@
         
         let defaultTransactions = [
             { id: 1, type: 'in', titleVi: 'Nhận lương tháng 02', titleEn: 'February Salary', desc: 'CONGVY TECH CORP', amount: 18500000, timeVi: 'Hôm nay, 08:30', timeEn: 'Today, 08:30' },
-            { id: 2, type: 'out', titleVi: 'Chuyển tiền Vietcombank', titleEn: 'Transfer to Vietcombank', desc: 'Nguyen Van A', amount: -1250000, timeVi: 'Hôm qua, 14:15', timeEn: 'Yesterday, 14:15' }
+            { id: 2, type: 'out', titleVi: 'Chuyển tiền Vietcombank', titleEn: 'Transfer to Vietcombank', desc: 'Nguyen Van A', amount: -1250000, timeVi: 'Hôm qua, 14:15', timeEn: 'Yesterday, 14:15' },
+            { id: 3, type: 'out', titleVi: 'Thanh toán điện lực', titleEn: 'Electricity Bill', desc: 'EVN Ha Noi', amount: -480000, timeVi: '28/02/2026', timeEn: 'Feb 28, 2026' }
         ];
 
         let transactions = localStorage.getItem('vhma_transactions') ? JSON.parse(localStorage.getItem('vhma_transactions')) : defaultTransactions;
 
+        function saveDataToStorage() {
+            localStorage.setItem('vhma_balance', currentBalance);
+            localStorage.setItem('vhma_usd_balance', currentUsdBalance);
+            localStorage.setItem('vhma_savings_balance', currentSavingsBalance);
+            localStorage.setItem('vhma_stock_balance', currentStockBalance);
+            localStorage.setItem('vhma_stock_portfolio', JSON.stringify(stockPortfolio));
+            localStorage.setItem('vhma_transactions', JSON.stringify(transactions));
+        }
+
         let translations = {
             vi: {
                 greeting: "Chào buổi tối,",
-                accType: "Tài khoản thanh toán",
-                transfer: "Chuyển tiền",
-                deposit: "Nạp tiền",
-                savings: "Tiết kiệm",
-                qr: "Quét QR",
-                recentTx: "Giao dịch gần đây",
-                seeAll: "Xem tất cả",
                 globalEyeShow: "Hiển thị",
                 globalEyeHide: "Ẩn số dư"
             },
             en: {
                 greeting: "Good evening,",
-                accType: "Payment Account",
-                transfer: "Transfer",
-                deposit: "Top-up",
-                savings: "Savings",
-                qr: "Scan QR",
-                recentTx: "Recent Transactions",
-                seeAll: "See all",
                 globalEyeShow: "Show",
                 globalEyeHide: "Hide balance"
             }
@@ -463,11 +463,11 @@
                 savingsText.innerText = formatMoney(currentSavingsBalance);
                 stockText.innerText = formatMoney(currentStockBalance);
             } else {
-                globalPreview.innerText = '********';[cite: 5]
-                balanceText.innerText = '********';[cite: 5]
-                usdBalanceText.innerText = '********';[cite: 5]
-                savingsText.innerText = '********';[cite: 5]
-                stockText.innerText = '********';[cite: 5]
+                globalPreview.innerText = '********';
+                balanceText.innerText = '********';
+                usdBalanceText.innerText = '********';
+                savingsText.innerText = '********';
+                stockText.innerText = '********';
             }
         }
 
@@ -515,13 +515,211 @@
 
         function openModal(type) {
             const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
             modal.classList.remove('hidden');
-            document.getElementById('modal-title').innerText = "Quản lý tài sản";
-            document.getElementById('modal-body').innerHTML = `<p class="text-xs text-slate-300">Tính năng đang hoạt động cho tài khoản ${loggedUser}.</p>`;
+
+            if(type === 'transfer') {
+                title.innerText = 'Chuyển tiền nhanh / Nội bộ';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tài khoản / Số thẻ nhận</label>
+                        <input type="text" id="recv-account" placeholder="Nhập số tài khoản..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền chuyển (đ)</label>
+                        <input type="number" id="transfer-amount" placeholder="0" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Nội dung chuyển tiền</label>
+                        <input type="text" id="transfer-desc" placeholder="Chuyển tiền..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button onclick="executeTransfer()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-1">Xác thực giao dịch</button>
+                `;
+            } else if(type === 'deposit') {
+                title.innerText = 'Nạp tiền vào tài khoản';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền nạp (đ)</label>
+                        <input type="number" id="deposit-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <button onclick="executeDeposit()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-1">Xác nhận nạp tiền</button>
+                `;
+            } else if(type === 'savings') {
+                title.innerText = 'Mở tài khoản tiết kiệm online';
+                body.innerHTML = `
+                    <div class="bg-blue-500/10 border border-blue-500/20 p-3 rounded-xl text-center">
+                        <span class="text-[10px] text-blue-300">Lãi suất kỳ hạn 6 tháng</span>
+                        <h4 class="text-lg font-bold text-blue-400 mt-0.5">6.8% / year</h4>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền gửi (đ)</label>
+                        <input type="number" id="savings-amount" placeholder="Tối thiểu 1,000,000 đ" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
+                    </div>
+                    <button onclick="executeSavings()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-1">Xác nhận gửi</button>
+                `;
+            } else if(type === 'savings-withdraw') {
+                title.innerText = 'Rút tiền tiết kiệm về TK chính';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền rút (đ)</label>
+                        <input type="number" id="savings-withdraw-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono">
+                    </div>
+                    <button onclick="executeSavingsWithdraw()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-2">Xác nhận rút</button>
+                `;
+            } else if(type === 'stock-deposit') {
+                title.innerText = 'Nạp thêm vốn đầu tư Blue-chip';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền đầu tư thêm (đ)</label>
+                        <input type="number" id="stock-deposit-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500 font-mono">
+                    </div>
+                    <button onclick="executeStockDeposit()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-2">Xác nhận nạp vốn</button>
+                `;
+            } else if(type === 'stock-withdraw') {
+                title.innerText = 'Rút vốn đầu tư về TK chính';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền rút (đ)</label>
+                        <input type="number" id="stock-withdraw-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono">
+                    </div>
+                    <button onclick="executeStockWithdraw()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-2">Xác nhận rút</button>
+                `;
+            } else if(type === 'stock') {
+                title.innerText = 'Chi tiết Danh mục Blue-chip (VN30)';
+                body.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div><div class="text-[11px] font-bold text-white">VCB (Ngân hàng Ngoại thương)</div><div class="text-[9px] text-slate-300">Tỷ trọng: 35%</div></div>
+                            <span class="text-[10px] font-mono font-bold text-emerald-400">${formatMoney(stockPortfolio.vcb)}</span>
+                        </div>
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div><div class="text-[11px] font-bold text-white">VIC (Vingroup)</div><div class="text-[9px] text-slate-300">Tỷ trọng: 25%</div></div>
+                            <span class="text-[10px] font-mono font-bold text-emerald-400">${formatMoney(stockPortfolio.vic)}</span>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-2">Đóng</button>
+                `;
+            } else if(type === 'qr') {
+                title.innerText = 'Quét mã QR thanh toán';
+                body.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-4">
+                        <div onclick="simulateScanQR()" class="w-32 h-32 border-2 border-dashed border-blue-500 rounded-xl flex items-center justify-center bg-slate-950 cursor-pointer">
+                            <i class="fa-solid fa-qrcode text-4xl text-blue-400 animate-pulse"></i>
+                        </div>
+                        <p class="text-[10px] text-slate-300 mt-2">Chạm vào QR để mô phỏng quét</p>
+                    </div>
+                `;
+            } else if(type === 'usd-deposit') {
+                title.innerText = 'Nạp tiền vào tài khoản USD';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền ($)</label>
+                        <input type="number" id="usd-deposit-amount" placeholder="Nhập số USD..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                    </div>
+                    <button onclick="executeUsdDeposit()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-1">Xác nhận nạp USD</button>
+                `;
+            } else if(type === 'usd-transfer') {
+                title.innerText = 'Chuyển ngoại tệ USD';
+                body.innerHTML = `
+                    <div>
+                        <label class="text-[10px] text-slate-300 block mb-1">Số tiền chuyển ($)</label>
+                        <input type="number" id="usd-transfer-amount" placeholder="Nhập số USD..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                    </div>
+                    <button onclick="executeUsdTransfer()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-lg transition text-xs mt-1">Xác nhận chuyển</button>
+                `;
+            }
         }
 
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
+        }
+
+        function executeTransfer() {
+            const amount = parseInt(document.getElementById('transfer-amount').value);
+            if(isNaN(amount) || amount <= 0 || amount > currentBalance) {
+                showNotification('Số tiền không hợp lệ hoặc vượt quá số dư!');
+                return;
+            }
+            currentBalance -= amount;
+            transactions.unshift({ id: Date.now(), type: 'out', titleVi: 'Chuyển tiền nhanh', titleEn: 'Quick Transfer', desc: 'Chuyển khoản nội bộ', amount: -amount, timeVi: 'Vừa xong', timeEn: 'Just now' });
+            saveDataToStorage(); updateAllBalancesUI(); renderTransactions(transactions); closeModal();
+            showNotification('Chuyển tiền thành công!');
+        }
+
+        function executeDeposit() {
+            const amount = parseInt(document.getElementById('deposit-amount').value);
+            if(isNaN(amount) || amount <= 0) return;
+            currentBalance += amount;
+            transactions.unshift({ id: Date.now(), type: 'in', titleVi: 'Nạp tiền vào tài khoản', titleEn: 'Deposit', desc: 'Napas', amount: amount, timeVi: 'Vừa xong', timeEn: 'Just now' });
+            saveDataToStorage(); updateAllBalancesUI(); renderTransactions(transactions); closeModal();
+            showNotification('Nạp tiền thành công!');
+        }
+
+        function executeSavings() {
+            const amount = parseInt(document.getElementById('savings-amount').value);
+            if(isNaN(amount) || amount < 1000000 || amount > currentBalance) {
+                showNotification('Số tiền tối thiểu 1,000,000 đ hoặc không đủ số dư!');
+                return;
+            }
+            currentBalance -= amount; currentSavingsBalance += amount;
+            transactions.unshift({ id: Date.now(), type: 'out', titleVi: 'Gửi tiết kiệm online', titleEn: 'Online Savings', desc: 'VHMA Savings', amount: -amount, timeVi: 'Vừa xong', timeEn: 'Just now' });
+            saveDataToStorage(); updateAllBalancesUI(); renderTransactions(transactions); closeModal();
+            showNotification('Gửi tiết kiệm thành công!');
+        }
+
+        function executeSavingsWithdraw() {
+            const amount = parseInt(document.getElementById('savings-withdraw-amount').value);
+            if(isNaN(amount) || amount <= 0 || amount > currentSavingsBalance) return;
+            currentSavingsBalance -= amount; currentBalance += amount;
+            transactions.unshift({ id: Date.now(), type: 'in', titleVi: 'Rút tiền tiết kiệm', titleEn: 'Savings Withdrawal', desc: 'VHMA Savings', amount: amount, timeVi: 'Vừa xong', timeEn: 'Just now' });
+            saveDataToStorage(); updateAllBalancesUI(); renderTransactions(transactions); closeModal();
+            showNotification('Rút tiền tiết kiệm thành công!');
+        }
+
+        function executeStockDeposit() {
+            const amount = parseInt(document.getElementById('stock-deposit-amount').value);
+            if(isNaN(amount) || amount <= 0 || amount > currentBalance) return;
+            currentBalance -= amount;
+            stockPortfolio.vcb += amount * 0.35; stockPortfolio.vic += amount * 0.25; stockPortfolio.fpt += amount * 0.25; stockPortfolio.vnm += amount * 0.15;
+            transactions.unshift({ id: Date.now(), type: 'out', titleVi: 'Đầu tư chứng khoán VN30', titleEn: 'Stock Investment', desc: 'Wealth Management', amount: -amount, timeVi: 'Vừa xong', timeEn: 'Just now' });
+            saveDataToStorage(); updateAllBalancesUI(); renderTransactions(transactions); closeModal();
+            showNotification('Nạp vốn đầu tư thành công!');
+        }
+
+        function executeStockWithdraw() {
+            const amount = parseInt(document.getElementById('stock-withdraw-amount').value);
+            currentStockBalance = stockPortfolio.vcb + stockPortfolio.vic + stockPortfolio.fpt + stockPortfolio.vnm;
+            if(isNaN(amount) || amount <= 0 || amount > currentStockBalance) return;
+            let ratio = amount / currentStockBalance;
+            stockPortfolio.vcb -= stockPortfolio.vcb * ratio; stockPortfolio.vic -= stockPortfolio.vic * ratio; stockPortfolio.fpt -= stockPortfolio.fpt * ratio; stockPortfolio.vnm -= stockPortfolio.vnm * ratio;
+            currentBalance += amount;
+            transactions.unshift({ id: Date.now(), type: 'in', titleVi: 'Rút vốn đầu tư chứng khoán', titleEn: 'Stock Withdrawal', desc: 'Wealth Management', amount: amount, timeVi: 'Vừa xong', timeEn: 'Just now' });
+            saveDataToStorage(); updateAllBalancesUI(); renderTransactions(transactions); closeModal();
+            showNotification('Rút vốn thành công!');
+        }
+
+        function executeUsdDeposit() {
+            const amount = parseFloat(document.getElementById('usd-deposit-amount').value);
+            if(isNaN(amount) || amount <= 0) return;
+            currentUsdBalance += amount;
+            saveDataToStorage(); updateAllBalancesUI(); closeModal();
+            showNotification('Nạp USD thành công!');
+        }
+
+        function executeUsdTransfer() {
+            const amount = parseFloat(document.getElementById('usd-transfer-amount').value);
+            if(isNaN(amount) || amount <= 0 || amount > currentUsdBalance) return;
+            currentUsdBalance -= amount;
+            saveDataToStorage(); updateAllBalancesUI(); closeModal();
+            showNotification('Chuyển USD thành công!');
+        }
+
+        function simulateScanQR() {
+            closeModal(); openModal('transfer');
+            document.getElementById('recv-account').value = '190088889999';
+            document.getElementById('transfer-amount').value = '350000';
+            showNotification('Quét QR thành công!');
         }
 
         function filterTransactions(type) {
@@ -532,6 +730,14 @@
         function handleLogout() {
             sessionStorage.removeItem('vhma_user');
             window.location.href = 'login.html';
+        }
+
+        function showNotification(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => { toast.classList.remove('opacity-100'); toast.classList.add('opacity-0', 'pointer-events-none'); }, 3000);
         }
 
         // Initialize UI
